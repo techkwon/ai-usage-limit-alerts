@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 사용량 한도 알림 대형 프로모션 타일</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      width: 1400px;
+      height: 560px;
+      margin: 0;
+      overflow: hidden;
+    }
+    body {
+      color: #172033;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 13% 12%, rgba(204, 120, 92, 0.24), transparent 31%),
+        radial-gradient(circle at 86% 84%, rgba(66, 133, 244, 0.22), transparent 34%),
+        linear-gradient(120deg, #f8fafc 0%, #eef3ff 55%, #eefaf6 100%);
+    }
+    .tile {
+      display: grid;
+      width: 1400px;
+      height: 560px;
+      grid-template-columns: minmax(0, 1fr) 510px;
+      align-items: center;
+      gap: 72px;
+      padding: 58px 86px 58px 96px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+    .brand img {
+      width: 96px;
+      height: 96px;
+      border-radius: 25px;
+      box-shadow: 0 18px 45px rgba(31, 42, 77, 0.2);
+    }
+    h1 {
+      margin: 0;
+      font-size: 56px;
+      line-height: 1.12;
+      letter-spacing: -0.055em;
+    }
+    .lead {
+      max-width: 680px;
+      margin: 28px 0 0;
+      color: #58657b;
+      font-size: 23px;
+      line-height: 1.55;
+      letter-spacing: -0.018em;
+      word-break: keep-all;
+    }
+    .free-hook {
+      display: inline-flex;
+      margin-top: 20px;
+      padding: 9px 14px;
+      border: 1px solid rgba(74, 89, 124, 0.14);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.82);
+      color: #32415a;
+      font-size: 16px;
+      font-weight: 850;
+    }
+    .services {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .services span {
+      padding: 9px 14px;
+      border: 1px solid rgba(74, 89, 124, 0.12);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 7px 20px rgba(38, 50, 83, 0.08);
+      color: #354258;
+      font-size: 15px;
+      font-weight: 750;
+    }
+    .usage-card {
+      width: 510px;
+      padding: 22px;
+      border: 1px solid rgba(48, 62, 97, 0.12);
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 28px 70px rgba(32, 44, 80, 0.18);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      font-size: 18px;
+      font-weight: 850;
+    }
+    .demo {
+      color: #7b8799;
+      font-size: 11px;
+      font-weight: 650;
+    }
+    .provider {
+      --accent: #64748b;
+      --tint: rgba(100, 116, 139, 0.08);
+      margin-top: 9px;
+      padding: 10px 13px 11px;
+      border-left: 4px solid var(--accent);
+      border-radius: 12px;
+      background: var(--tint);
+    }
+    .provider.claude { --accent: #cc785c; --tint: rgba(204, 120, 92, 0.1); }
+    .provider.chatgpt { --accent: #10a37f; --tint: rgba(16, 163, 127, 0.09); }
+    .provider.grok { --accent: #55555e; --tint: rgba(80, 80, 90, 0.09); }
+    .provider.gemini { --accent: #4285f4; --tint: rgba(66, 133, 244, 0.09); }
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      color: #31394a;
+      font-size: 13px;
+    }
+    .provider-name {
+      color: #1f2937;
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .value { font-weight: 800; }
+    .track {
+      height: 6px;
+      margin-top: 6px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: rgba(120, 130, 145, 0.22);
+    }
+    .fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <main class="tile">
+    <section>
+      <div class="brand">
+        <img src="../icons/icon128.png" alt="" />
+        <h1 id="promo-title">AI 사용량<br />한도 알림</h1>
+      </div>
+      <p class="lead" id="promo-lead">네 AI 서비스의 사용량과 리셋 시간을 한눈에 확인하고, 한도에 도달하기 전에 로컬 알림을 받으세요.</p>
+      <div class="free-hook" id="promo-hook">완전 무료 · 광고 없음 · 구독 없음</div>
+      <div class="services" aria-label="지원 서비스">
+        <span>ChatGPT</span>
+        <span>Claude</span>
+        <span>Gemini</span>
+        <span>Grok</span>
+      </div>
+    </section>
+
+    <section class="usage-card" aria-label="사용량 화면 예시">
+      <div class="card-header">
+        <span id="card-title">현재 AI 한도</span>
+        <span class="demo" id="card-demo">예시 데이터</span>
+      </div>
+      <div class="provider claude">
+        <div class="row"><span class="provider-name">Claude</span><span class="value">61%</span></div>
+        <div class="track"><div class="fill" style="width:61%"></div></div>
+      </div>
+      <div class="provider chatgpt">
+        <div class="row"><span class="provider-name">ChatGPT</span><span class="value" id="chatgpt-value">딥 리서치 12회</span></div>
+        <div class="track"><div class="fill" style="width:48%"></div></div>
+      </div>
+      <div class="provider grok">
+        <div class="row"><span class="provider-name">Grok</span><span class="value" id="grok-value">13/20회</span></div>
+        <div class="track"><div class="fill" style="width:65%"></div></div>
+      </div>
+      <div class="provider gemini">
+        <div class="row"><span class="provider-name">Gemini</span><span class="value">18%</span></div>
+        <div class="track"><div class="fill" style="width:18%"></div></div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const locale = new URLSearchParams(location.search).get('lang') === 'ko' ? 'ko' : 'en';
+    document.documentElement.lang = locale;
+    if (locale !== 'ko') {
+      document.title = 'AI Usage Limit Alerts — Large Promotional Tile';
+      document.getElementById('promo-title').innerHTML = 'AI Usage<br />Limit Alerts';
+      document.getElementById('promo-lead').textContent =
+        'See usage and reset times across four AI services, then get local alerts before you reach a limit.';
+      document.getElementById('promo-hook').textContent = 'Completely free · No ads · No subscription';
+      document.getElementById('card-title').textContent = 'Current AI limits';
+      document.getElementById('card-demo').textContent = 'Sample data';
+      document.getElementById('chatgpt-value').textContent = 'Deep research · 12 left';
+      document.getElementById('grok-value').textContent = '13 of 20 left';
+    }
+  </script>
+</body>
+</html>

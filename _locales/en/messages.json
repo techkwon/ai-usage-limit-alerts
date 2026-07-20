@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "AI Usage Limit Alerts"
+  },
+  "appShortName": {
+    "message": "AI Limits"
+  },
+  "appDescription": {
+    "message": "Track ChatGPT, Claude, Gemini, and Grok usage and reset times with local alerts. Completely free, with no ads or subscription."
+  },
+  "appActionTitle": {
+    "message": "AI Usage Limit Alerts"
+  },
+  "refresh": {
+    "message": "Refresh"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loginRequired": {
+    "message": "Sign in required"
+  },
+  "openProvider": {
+    "message": "Open $1"
+  },
+  "schemaChanged": {
+    "message": "Detected an API response format change"
+  },
+  "networkError": {
+    "message": "Network error"
+  },
+  "unknownError": {
+    "message": "Unknown error"
+  },
+  "fullResetCredits": {
+    "message": "Full reset credits: $1"
+  },
+  "updatedAt": {
+    "message": "Updated: $1"
+  },
+  "resetSoon": {
+    "message": "Reset soon"
+  },
+  "resetInDaysHours": {
+    "message": "Resets in $1d $2h"
+  },
+  "resetInHoursMinutes": {
+    "message": "Resets in $1h $2m"
+  },
+  "resetInMinutes": {
+    "message": "Resets in $1m"
+  },
+  "remainingCount": {
+    "message": "$1 left"
+  },
+  "remainingCountOfTotal": {
+    "message": "$1/$2 left"
+  },
+  "usageTitle": {
+    "message": "Usage"
+  },
+  "loadFailed": {
+    "message": "Failed to load"
+  },
+  "collapseDetails": {
+    "message": "Hide ▴"
+  },
+  "expandDetails": {
+    "message": "Details ▾"
+  },
+  "sessionUsage": {
+    "message": "Session usage"
+  },
+  "weeklyUsage": {
+    "message": "Weekly"
+  },
+  "notificationResetTitle": {
+    "message": "$1 usage reset ✅"
+  },
+  "notificationResetPercentMessage": {
+    "message": "$1 limit has reset. You can use 100% again."
+  },
+  "notificationExhaustedTitle": {
+    "message": "$1 limit reached 🚨"
+  },
+  "notificationReached100Message": {
+    "message": "$1 usage reached 100%."
+  },
+  "notificationReached80Title": {
+    "message": "$1 usage at 80% ⚠️"
+  },
+  "notificationReached80Message": {
+    "message": "$1 usage is $2%. You are getting close to the limit."
+  },
+  "notificationResetRemainingMessage": {
+    "message": "$1 limit has reset. ($2 left)"
+  },
+  "notificationRemainingExhaustedMessage": {
+    "message": "All remaining $1 uses have been used."
+  }
+}

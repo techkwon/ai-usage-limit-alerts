@@ -1,0 +1,17 @@
+# Local agent and editor state
+.claude/
+.omx/
+
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+
+# Dependency, coverage, and log outputs
+node_modules/
+coverage/
+*.log
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db

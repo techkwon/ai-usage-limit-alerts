@@ -1,0 +1,103 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --fg: #1f2328;
+  --muted: #6b7280;
+  --bar-bg: #e5e7eb;
+  --border: #e5e7eb;
+  --green: #22c55e;
+  --yellow: #eab308;
+  --red: #ef4444;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1c1e;
+    --fg: #f3f4f6;
+    --muted: #9ca3af;
+    --bar-bg: #3a3a3c;
+    --border: #3a3a3c;
+  }
+}
+body {
+  margin: 0;
+  min-width: 300px;
+  font: 13px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  word-break: keep-all; /* 한글 단어 중간 잘림 방지 */
+}
+a { color: inherit; }
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 6px;
+}
+h1 { font-size: 14px; margin: 0; }
+#refresh {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 16px;
+  cursor: pointer;
+}
+#refresh:hover { color: var(--fg); }
+main { padding: 4px 14px 10px; }
+section {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent, var(--muted));
+  background: var(--tint, transparent);
+}
+section.claude { --accent: #cc785c; --tint: rgba(204, 120, 92, 0.09); }
+section.chatgpt { --accent: #10a37f; --tint: rgba(16, 163, 127, 0.09); }
+section.grok { --accent: #55555e; --tint: rgba(80, 80, 90, 0.1); }
+section.gemini { --accent: #4285f4; --tint: rgba(66, 133, 244, 0.09); }
+section h2 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  margin: 0 0 8px;
+  color: var(--fg);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+section h2::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent, var(--muted));
+}
+.window { margin-bottom: 12px; }
+.window .row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+.window .pct { font-weight: 600; }
+.bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bar-bg);
+  overflow: hidden;
+}
+.bar > div {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--green);
+  transition: width 0.3s;
+}
+.bar.warn > div { background: var(--yellow); }
+.bar.crit > div { background: var(--red); }
+.reset { color: var(--muted); font-size: 11px; margin-top: 2px; }
+.muted { color: var(--muted); }
+.error { color: var(--red); }
+footer {
+  padding: 6px 14px 10px;
+  font-size: 11px;
+  border-top: 1px solid var(--border);
+}

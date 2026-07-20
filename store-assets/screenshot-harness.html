@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 사용량 한도 알림 스토어 스크린샷</title>
+  <link rel="stylesheet" href="../popup/popup.css" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 800px; }
+    body {
+      height: 800px;
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(91, 124, 250, 0.22), transparent 34%),
+        radial-gradient(circle at 82% 78%, rgba(16, 163, 127, 0.16), transparent 32%),
+        #f5f7fb;
+      color: #182032;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    html[data-theme="dark"] body {
+      background:
+        radial-gradient(circle at 18% 18%, rgba(91, 124, 250, 0.28), transparent 34%),
+        radial-gradient(circle at 82% 78%, rgba(16, 163, 127, 0.18), transparent 32%),
+        #0d111a;
+      color: #eef2ff;
+    }
+    .store-shell {
+      width: 100%;
+      height: 800px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 410px;
+      align-items: center;
+      gap: 72px;
+      padding: 64px 116px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 30px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #334155;
+    }
+    .brand img {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(34, 44, 80, 0.16);
+    }
+    .eyebrow {
+      display: inline-flex;
+      padding: 7px 12px;
+      border: 1px solid rgba(76, 98, 168, 0.2);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      color: #4f5f84;
+      font-size: 14px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+    .capture-copy h2 {
+      max-width: 650px;
+      margin: 22px 0 18px;
+      font-size: 52px;
+      line-height: 1.16;
+      letter-spacing: -0.045em;
+      word-break: keep-all;
+    }
+    .capture-copy p {
+      max-width: 620px;
+      margin: 0;
+      color: #526079;
+      font-size: 22px;
+      line-height: 1.65;
+      word-break: keep-all;
+    }
+    .services {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 30px;
+    }
+    .services span {
+      padding: 9px 13px;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 5px 18px rgba(39, 51, 89, 0.08);
+      color: #2f3b55;
+      font-size: 15px;
+      font-weight: 650;
+    }
+    .popup-frame {
+      width: 410px;
+      overflow: hidden;
+      border: 1px solid rgba(37, 50, 82, 0.12);
+      border-radius: 22px;
+      background: #ffffff;
+      box-shadow: 0 28px 70px rgba(32, 44, 80, 0.2);
+      color: #1f2328;
+    }
+    html[data-theme="dark"] .brand,
+    html[data-theme="dark"] .capture-copy p {
+      color: #c5cee3;
+    }
+    html[data-theme="dark"] .eyebrow,
+    html[data-theme="dark"] .services span {
+      border-color: rgba(173, 188, 229, 0.18);
+      background: rgba(27, 34, 50, 0.86);
+      color: #dbe4fb;
+      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.18);
+    }
+    html[data-theme="dark"] .popup-frame {
+      --bg: #171a22;
+      --fg: #f4f7ff;
+      --muted: #a7b0c4;
+      --bar-bg: #343a48;
+      border-color: rgba(182, 196, 233, 0.16);
+      background: var(--bg);
+      color: var(--fg);
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.48);
+    }
+    html[data-theme="dark"] .demo-note {
+      border-top-color: #343a48;
+      background: #11151d;
+      color: #99a4ba;
+    }
+    .popup-frame header {
+      padding: 18px 20px 10px;
+    }
+    .popup-frame h1 {
+      font-size: 17px;
+    }
+    .popup-frame main {
+      padding: 7px 20px 12px;
+    }
+    .popup-frame section {
+      margin-bottom: 9px;
+      padding: 9px 11px;
+    }
+    .popup-frame .window {
+      margin-bottom: 7px;
+    }
+    .popup-frame footer {
+      padding: 9px 20px 12px;
+    }
+    .demo-note {
+      padding: 8px 20px;
+      border-top: 1px solid #e5e7eb;
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 11px;
+      text-align: right;
+    }
+  </style>
+  <script>
+    const captureParams = new URLSearchParams(location.search);
+    const captureLocale = captureParams.get('lang') === 'ko' ? 'ko' : 'en';
+    const captureTheme = captureParams.get('theme') === 'dark' ? 'dark' : 'light';
+    document.documentElement.lang = captureLocale;
+    document.documentElement.dataset.theme = captureTheme;
+    const isKo = captureLocale === 'ko';
+    const captureMessages = isKo ? {
+      appName: 'AI 사용량 한도 알림',
+      refresh: '새로고침',
+      loading: '불러오는 중…',
+      loginRequired: '로그인 필요',
+      openProvider: '$1 열기',
+      schemaChanged: 'API 응답 형식 변경 감지',
+      networkError: '네트워크 오류',
+      unknownError: '알 수 없는 오류',
+      fullResetCredits: 'Full reset 크레딧: $1',
+      updatedAt: '업데이트: $1',
+      resetSoon: '곧 리셋',
+      resetInDaysHours: '$1일 $2시간 뒤 리셋',
+      resetInHoursMinutes: '$1시간 $2분 뒤 리셋',
+      resetInMinutes: '$1분 뒤 리셋',
+      remainingCount: '남은 $1회',
+      remainingCountOfTotal: '남은 $1/$2회'
+    } : {
+      appName: 'AI Usage Limit Alerts',
+      refresh: 'Refresh',
+      loading: 'Loading...',
+      loginRequired: 'Sign in required',
+      openProvider: 'Open $1',
+      schemaChanged: 'Detected an API response format change',
+      networkError: 'Network error',
+      unknownError: 'Unknown error',
+      fullResetCredits: 'Full reset credits: $1',
+      updatedAt: 'Updated: $1',
+      resetSoon: 'Reset soon',
+      resetInDaysHours: 'Resets in $1d $2h',
+      resetInHoursMinutes: 'Resets in $1h $2m',
+      resetInMinutes: 'Resets in $1m',
+      remainingCount: '$1 left',
+      remainingCountOfTotal: '$1/$2 left'
+    };
+    const resetAt = (hours) => new Date(Date.now() + hours * 3600000).toISOString();
+    const fetchedAt = Date.now();
+    const demoResults = {
+      claude: {
+        ok: true,
+        provider: 'claude',
+        fetchedAt,
+        windows: [
+          { kind: 'session', label: isKo ? '세션 (5시간)' : 'Session (5 hours)', utilization: 42, severity: 'normal', resetsAt: resetAt(2.4) },
+          { kind: 'weekly_all', label: isKo ? '주간 전체' : 'Weekly total', utilization: 61, severity: 'normal', resetsAt: resetAt(74) }
+        ]
+      },
+      chatgpt: {
+        ok: true,
+        provider: 'chatgpt',
+        fetchedAt,
+        windows: [
+          { kind: 'feature:deep_research', label: isKo ? '딥 리서치' : 'Deep research', remaining: 12, resetsAt: resetAt(96) }
+        ]
+      },
+      grok: {
+        ok: true,
+        provider: 'grok',
+        fetchedAt,
+        windows: [
+          { kind: 'grok:grok-4:DEFAULT', label: 'Grok 4', utilization: 35, remaining: 13, total: 20, resetsAt: resetAt(3.1) }
+        ]
+      },
+      gemini: {
+        ok: true,
+        provider: 'gemini',
+        fetchedAt,
+        windows: [
+          { kind: 'session', label: isKo ? '세션 (5시간)' : 'Session (5 hours)', utilization: 18, severity: 'normal', resetsAt: resetAt(4.2) }
+        ]
+      }
+    };
+
+    window.chrome = {
+      storage: {
+        local: {
+          async get() {
+            return {};
+          },
+          async set() {}
+        }
+      },
+      runtime: {
+        async sendMessage(message) {
+          if (message?.type === 'refresh_all') return demoResults;
+          return true;
+        }
+      },
+      i18n: {
+        getUILanguage() {
+          return captureLocale;
+        },
+        getMessage(name, substitutions) {
+          const values = substitutions == null
+            ? []
+            : Array.isArray(substitutions) ? substitutions : [substitutions];
+          return (captureMessages[name] || '').replace(/\$(\d+)/g, (_match, index) => values[Number(index) - 1] ?? '');
+        }
+      }
+    };
+  </script>
+</head>
+<body>
+  <div class="store-shell">
+    <div class="capture-copy">
+      <div class="brand">
+        <img src="../icons/icon128.png" alt="" />
+        <span id="capture-brand">AI 사용량 한도 알림</span>
+      </div>
+      <div class="eyebrow" id="capture-eyebrow">완전 무료 · 광고 없음 · 구독 없음</div>
+      <h2 id="capture-heading">네 AI 서비스의<br />사용량을 한눈에</h2>
+      <p id="capture-lead">팝업과 페이지 위젯에서 현재 한도와 리셋 시간을 확인하고, 소진 전에 로컬 알림을 받으세요.</p>
+      <div class="services" aria-label="지원 서비스">
+        <span>ChatGPT</span>
+        <span>Claude</span>
+        <span>Gemini</span>
+        <span>Grok</span>
+      </div>
+    </div>
+
+    <div class="popup-frame" aria-label="AI 사용량 한도 알림 팝업 예시">
+      <header>
+        <h1 id="title">AI 사용량 한도 알림</h1>
+        <button id="refresh" title="새로고침">⟳</button>
+      </header>
+      <main id="content">
+        <section class="claude">
+          <h2>Claude</h2>
+          <div class="window">
+            <div class="row"><span>세션 (5시간)</span><span class="pct">42%</span></div>
+            <div class="bar"><div style="width:42%"></div></div>
+            <div class="reset">2시간 23분 뒤 리셋</div>
+          </div>
+          <div class="window">
+            <div class="row"><span>주간 전체</span><span class="pct">61%</span></div>
+            <div class="bar"><div style="width:61%"></div></div>
+            <div class="reset">3일 2시간 뒤 리셋</div>
+          </div>
+        </section>
+        <section class="chatgpt">
+          <h2>ChatGPT</h2>
+          <div class="window">
+            <div class="row"><span>딥 리서치</span><span class="pct">남은 12회</span></div>
+            <div class="reset">4일 뒤 리셋</div>
+          </div>
+        </section>
+        <section class="grok">
+          <h2>Grok</h2>
+          <div class="window">
+            <div class="row"><span>Grok 4</span><span class="pct">남은 13/20회</span></div>
+            <div class="bar"><div style="width:35%"></div></div>
+            <div class="reset">3시간 6분 뒤 리셋</div>
+          </div>
+        </section>
+        <section class="gemini">
+          <h2>Gemini</h2>
+          <div class="window">
+            <div class="row"><span>세션 (5시간)</span><span class="pct">18%</span></div>
+            <div class="bar"><div style="width:18%"></div></div>
+            <div class="reset">4시간 12분 뒤 리셋</div>
+          </div>
+        </section>
+      </main>
+      <footer id="footer" class="muted">업데이트: 방금 전</footer>
+      <div class="demo-note" id="capture-note">개인정보 보호를 위해 예시 데이터를 사용했습니다.</div>
+    </div>
+  </div>
+  <script>
+    if (!isKo) {
+      document.title = 'AI Usage Limit Alerts — Store Screenshot';
+      document.getElementById('capture-brand').textContent = 'AI Usage Limit Alerts';
+      document.getElementById('capture-eyebrow').textContent = 'Completely free · No ads · No subscription';
+      document.getElementById('capture-heading').innerHTML = 'Four AI services.<br />One clear view.';
+      document.getElementById('capture-lead').textContent =
+        'See current limits and reset times in the popup and page widgets, then get local alerts before you run out.';
+      document.getElementById('capture-note').textContent =
+        'Sample data is used to protect personal information.';
+    }
+  </script>
+  <script src="../content/i18n.js"></script>
+  <script src="../content/escape-html.js"></script>
+  <script type="module" src="../popup/popup.js"></script>
+</body>
+</html>

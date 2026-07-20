@@ -1,0 +1,172 @@
+/* AI Usage Meter — claude.ai 페이지 내 오버레이
+   claude.ai의 CSS 변수(--text-*, --bg-*, --border-*)를 사용해 라이트/다크 자동 대응.
+   변수가 없을 때의 폴백은 라이트 기준 진한 색 → 시인성 우선. */
+
+/* 플랫폼별 브랜드 틴트 — 구조·타이포는 동일, 배경/액센트만 다르다 */
+.aum-composer-bar,
+.aum-sidebar-card {
+  color-scheme: light dark;
+  --aum-surface: rgba(128, 128, 128, 0.06);
+  --aum-border: rgba(0, 0, 0, 0.12);
+  --aum-text: #374151;
+  --aum-text-strong: #111827;
+  --aum-text-muted: #6b7280;
+  --aum-track-bg: rgba(120, 120, 128, 0.35);
+}
+@media (prefers-color-scheme: dark) {
+  .aum-composer-bar,
+  .aum-sidebar-card {
+    --aum-surface: rgba(255, 255, 255, 0.08);
+    --aum-border: rgba(255, 255, 255, 0.16);
+    --aum-text: #e5e7eb;
+    --aum-text-strong: #f9fafb;
+    --aum-text-muted: #cbd5e1;
+    --aum-track-bg: rgba(255, 255, 255, 0.22);
+  }
+}
+.aum-claude {
+  --aum-tint: rgba(204, 120, 92, 0.09);   /* Claude 테라코타 */
+  --aum-accent: #cc785c;
+}
+.aum-chatgpt {
+  --aum-tint: rgba(16, 163, 127, 0.09);   /* ChatGPT 그린 */
+  --aum-accent: #10a37f;
+}
+.aum-grok {
+  --aum-tint: rgba(80, 80, 90, 0.10);     /* Grok 다크 그레이 */
+  --aum-accent: #55555e;
+}
+.aum-gemini {
+  --aum-tint: rgba(66, 133, 244, 0.09);   /* Gemini 블루 */
+  --aum-accent: #4285f4;
+}
+
+.aum-composer-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;             /* 줄바꿈은 항목 단위로만 */
+  gap: 6px 10px;
+  margin: 8px 12px 2px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-300, var(--aum-border));
+  border-left: 3px solid var(--aum-accent, #9ca3af);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-200, var(--aum-text));
+  background: var(--aum-tint, var(--bg-100, var(--aum-surface)));
+  word-break: keep-all;        /* 한글 단어 중간 잘림 방지 */
+  user-select: none;
+}
+.aum-composer-bar > span:not(.aum-track) { white-space: nowrap; }
+
+/* 한 한도(라벨+바+리셋)를 한 덩어리로 묶어 줄바꿈이 덩어리 사이에서만 일어나게 */
+.aum-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  flex: 0 0 auto;              /* 덩어리 자체도 짜부라지지 않게 */
+}
+/* 트랙은 절대 수축 금지 — 수축하면 그래프가 폭 0으로 사라진다 */
+.aum-composer-bar .aum-item .aum-track {
+  flex: 0 0 110px;
+  min-width: 110px;
+}
+
+/* Grok: 부모가 가운데 정렬 flex라 명시적으로 채팅창 폭(800px)에 맞춘다 */
+.aum-composer-bar.aum-grok {
+  width: 100%;
+  max-width: 800px;
+  box-sizing: border-box;
+  align-self: center;
+  margin-left: 0;
+  margin-right: 0;
+}
+.aum-composer-bar .aum-track {
+  flex: 0 0 140px;              /* 수축 금지 — 짜부라지면 그래프가 사라진다 */
+  min-width: 100px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--aum-track-bg); /* 틴트 배경 위에서도 항상 보이는 대비 */
+  overflow: hidden;
+}
+.aum-composer-bar .aum-fill,
+.aum-sidebar-card .aum-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: #16a34a;
+  transition: width 0.3s;
+}
+.aum-fill.warn { background: #d97706; }
+.aum-fill.crit { background: #dc2626; }
+.aum-pct {
+  font-weight: 700;
+  font-size: 12.5px;
+  color: var(--text-100, var(--aum-text-strong));
+}
+.aum-muted { color: var(--text-400, var(--aum-text-muted)); }
+
+.aum-toggle {
+  border: 1px solid var(--border-300, var(--aum-border));
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-300, var(--aum-text));
+  font-size: 11px;
+  padding: 1px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.aum-toggle:hover { background: rgba(128, 128, 128, 0.1); }
+.aum-toggle.crit { color: #dc2626; border-color: #dc2626; }
+.aum-extra {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.aum-sidebar-card {
+  margin: 4px 8px 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-300, var(--aum-border));
+  border-left: 3px solid var(--aum-accent, #9ca3af);
+  border-radius: 12px;
+  font-size: 12px;
+  color: var(--text-200, var(--aum-text));
+  background: var(--aum-tint, var(--bg-100, var(--aum-surface)));
+  word-break: keep-all;        /* 한글 단어 중간 잘림 방지 */
+  user-select: none;
+}
+.aum-sidebar-card .aum-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-100, var(--aum-text-strong));
+  margin-bottom: 8px;
+}
+.aum-sidebar-card .aum-time {
+  font-weight: 400;
+  font-size: 10.5px;
+  color: var(--text-400, var(--aum-text-muted));
+}
+.aum-sidebar-card .aum-row { margin-bottom: 8px; }
+.aum-sidebar-card .aum-row:last-child { margin-bottom: 0; }
+.aum-sidebar-card .aum-row-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+.aum-sidebar-card .aum-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--aum-track-bg);
+  overflow: hidden;
+}
+.aum-sidebar-card .aum-reset {
+  font-size: 10.5px;
+  color: var(--text-400, var(--aum-text-muted));
+  margin-top: 2px;
+}

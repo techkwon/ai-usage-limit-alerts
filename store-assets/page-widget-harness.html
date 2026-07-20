@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 사용량 한도 알림 페이지 위젯 스크린샷</title>
+  <link rel="stylesheet" href="../content/overlay.css" />
+  <script>
+    const captureParams = new URLSearchParams(location.search);
+    const captureLocale = captureParams.get('lang') === 'ko' ? 'ko' : 'en';
+    const captureTheme = captureParams.get('theme') === 'dark' ? 'dark' : 'light';
+    document.documentElement.lang = captureLocale;
+    document.documentElement.dataset.theme = captureTheme;
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 800px; }
+    body {
+      --provider: #cc785c;
+      height: 800px;
+      margin: 0;
+      overflow: hidden;
+      background: #f6f7f9;
+      color: #20242d;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    html[data-theme="dark"] body {
+      --text-100: #f4f7ff;
+      --text-200: #d6dceb;
+      --text-300: #c0c8da;
+      --text-400: #9ba7bc;
+      --bg-100: #171b24;
+      --border-300: rgba(194, 205, 231, 0.18);
+      background: #0e1219;
+      color: #eef3ff;
+    }
+    .demo-app {
+      width: 100%;
+      height: 800px;
+      display: grid;
+      grid-template-columns: 286px minmax(0, 1fr);
+    }
+    aside {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: 18px 12px 14px;
+      border-right: 1px solid #e4e7ec;
+      background: rgba(255, 255, 255, 0.9);
+    }
+    .provider-mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 2px 8px 20px;
+      font-size: 16px;
+      font-weight: 750;
+    }
+    .provider-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      background: var(--provider, #64748b);
+      box-shadow: inset 0 0 0 7px rgba(255, 255, 255, 0.76);
+    }
+    nav {
+      display: flex;
+      width: 100%;
+      flex: 1;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .nav-row, .profile-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 40px;
+      padding: 0 11px;
+      border-radius: 10px;
+      color: #586174;
+      font-size: 13px;
+    }
+    .nav-row.active {
+      background: #f0f2f6;
+      color: #252a35;
+      font-weight: 650;
+    }
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      border: 1px solid #c6ccd7;
+      border-radius: 6px;
+    }
+    .profile-row {
+      margin-top: auto;
+      border: 1px solid #e1e5ec;
+      background: #fafbfc;
+    }
+    .profile-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #d9dee8;
+    }
+    .df-bottom-tray {
+      min-height: 42px;
+      margin-top: 8px;
+      border-radius: 10px;
+      background: #f3f5f8;
+    }
+    .workspace {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      background:
+        radial-gradient(circle at 54% 34%, rgba(92, 116, 186, 0.1), transparent 30%),
+        #ffffff;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 62px;
+      padding: 0 28px;
+      border-bottom: 1px solid #eceef2;
+      color: #555f72;
+      font-size: 13px;
+    }
+    .privacy-pill {
+      padding: 7px 11px;
+      border: 1px solid #dfe4ed;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #657086;
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .empty-chat {
+      display: grid;
+      flex: 1;
+      place-content: center start;
+      padding: 0 500px 95px 78px;
+      text-align: left;
+    }
+    .empty-chat img {
+      width: 58px;
+      height: 58px;
+      margin: 0 0 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(38, 50, 84, 0.14);
+    }
+    .empty-chat h1 {
+      margin: 0 0 12px;
+      font-size: 31px;
+      letter-spacing: -0.035em;
+    }
+    .empty-chat p {
+      margin: 0;
+      color: #7a8394;
+      font-size: 15px;
+    }
+    .composer-wrap {
+      width: min(820px, calc(100% - 80px));
+      margin: 0 auto 24px;
+    }
+    form, fieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+    .composer {
+      min-height: 70px;
+      padding: 20px 22px;
+      border: 1px solid #dfe3ea;
+      border-radius: 18px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(35, 45, 73, 0.1);
+      color: #99a1af;
+      font-size: 14px;
+    }
+    .capture-label {
+      position: absolute;
+      top: 86px;
+      right: 34px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 13px;
+      border: 1px solid color-mix(in srgb, var(--provider, #64748b) 24%, white);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--provider, #64748b) 8%, white);
+      color: #455066;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .capture-label::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--provider, #64748b);
+    }
+    .widget-zoom {
+      position: absolute;
+      top: 158px;
+      right: 54px;
+      width: 390px;
+      padding: 22px;
+      border: 1px solid color-mix(in srgb, var(--provider, #64748b) 22%, white);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 24px 64px rgba(34, 45, 78, 0.16);
+      backdrop-filter: blur(14px);
+    }
+    .widget-zoom .zoom-kicker {
+      color: var(--provider, #64748b);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .widget-zoom h2 {
+      margin: 7px 0 5px;
+      font-size: 23px;
+      letter-spacing: -0.04em;
+    }
+    .widget-zoom > p {
+      margin: 0;
+      color: #697386;
+      font-size: 13px;
+    }
+    .widget-zoom .aum-sidebar-card {
+      margin: 17px 0 0;
+      padding: 14px 16px;
+      font-size: 13px;
+    }
+    .widget-zoom .aum-sidebar-card .aum-title {
+      font-size: 14px;
+    }
+    .variant-anchor,
+    .inline-chatgpt,
+    .block-chatgpt,
+    .composer-chatgpt {
+      display: none;
+    }
+    body:has(#chatgpt:target) {
+      --provider: #10a37f;
+    }
+    body:has(#chatgpt:target) .inline-claude,
+    body:has(#chatgpt:target) .block-claude,
+    body:has(#chatgpt:target) .composer-claude {
+      display: none !important;
+    }
+    body:has(#chatgpt:target) .inline-chatgpt {
+      display: inline;
+    }
+    body:has(#chatgpt:target) .block-chatgpt {
+      display: block;
+    }
+    body:has(#chatgpt:target) .composer-chatgpt {
+      display: flex;
+    }
+    html[data-theme="dark"] aside {
+      border-right-color: #2a3140;
+      background: rgba(20, 25, 35, 0.96);
+    }
+    html[data-theme="dark"] .nav-row,
+    html[data-theme="dark"] .profile-row,
+    html[data-theme="dark"] .topbar,
+    html[data-theme="dark"] .empty-chat p,
+    html[data-theme="dark"] .widget-zoom > p {
+      color: #aeb8cc;
+    }
+    html[data-theme="dark"] .nav-row.active,
+    html[data-theme="dark"] .profile-row,
+    html[data-theme="dark"] .df-bottom-tray {
+      border-color: #303849;
+      background: #222936;
+      color: #f0f4ff;
+    }
+    html[data-theme="dark"] .workspace {
+      background:
+        radial-gradient(circle at 54% 34%, rgba(92, 116, 186, 0.17), transparent 30%),
+        #121722;
+    }
+    html[data-theme="dark"] .topbar {
+      border-bottom-color: #2b3241;
+    }
+    html[data-theme="dark"] .privacy-pill,
+    html[data-theme="dark"] .capture-label {
+      border-color: #384156;
+      background: #1d2431;
+      color: #cbd5ea;
+    }
+    html[data-theme="dark"] .composer,
+    html[data-theme="dark"] .widget-zoom {
+      border-color: #343d50;
+      background: rgba(24, 30, 42, 0.96);
+      color: #aeb8cc;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.38);
+    }
+    html[data-theme="dark"] .aum-sidebar-card,
+    html[data-theme="dark"] .aum-composer-bar {
+      background: color-mix(in srgb, var(--aum-accent, #64748b) 10%, #171d28);
+    }
+  </style>
+  <script type="application/json" id="capture-fixture-source">
+    const provider = new URLSearchParams(location.search).get('provider') === 'chatgpt'
+      ? 'chatgpt'
+      : 'claude';
+    const resetAt = (hours) => new Date(Date.now() + hours * 3600000).toISOString();
+    const fixtures = {
+      claude: {
+        ok: true,
+        provider: 'claude',
+        fetchedAt: Date.now(),
+        windows: [
+          { kind: 'session', label: '세션 (5시간)', utilization: 42, severity: 'normal', resetsAt: resetAt(2.4) },
+          { kind: 'weekly_all', label: '주간 전체', utilization: 61, severity: 'normal', resetsAt: resetAt(74) },
+          { kind: 'weekly_scoped', label: '주간 · Claude Opus 4', utilization: 28, severity: 'normal', resetsAt: resetAt(96) }
+        ]
+      },
+      chatgpt: {
+        ok: true,
+        provider: 'chatgpt',
+        fetchedAt: Date.now(),
+        windows: [
+          { kind: 'model:gpt-5', label: 'GPT-5', utilization: 47, severity: 'normal', resetsAt: resetAt(3.8) },
+          { kind: 'feature:deep_research', label: '딥 리서치', remaining: 12, resetsAt: resetAt(96) },
+          { kind: 'feature:image_gen', label: '이미지 생성', remaining: 34, resetsAt: resetAt(168) }
+        ]
+      }
+    };
+    const result = fixtures[provider];
+
+    window.chrome = {
+      storage: {
+        local: {
+          async get() {
+            return provider === 'claude'
+              ? { usage_claude: result }
+              : { usage_chatgpt: result };
+          }
+        }
+      },
+      runtime: {
+        async sendMessage() {
+          return result;
+        }
+      }
+    };
+
+    document.documentElement.dataset.provider = provider;
+    document.documentElement.style.setProperty('--provider', provider === 'claude' ? '#cc785c' : '#10a37f');
+  </script>
+</head>
+<body>
+  <span id="claude" class="variant-anchor"></span>
+  <span id="chatgpt" class="variant-anchor"></span>
+  <div class="demo-app">
+    <aside>
+      <div class="provider-mark">
+        <span class="provider-dot"></span>
+        <span class="inline-claude">Claude</span>
+        <span class="inline-chatgpt">ChatGPT</span>
+      </div>
+      <nav>
+        <div class="nav-row active"><span class="nav-icon"></span><span>새 대화</span></div>
+        <div class="nav-row"><span class="nav-icon"></span><span>최근 대화</span></div>
+        <div class="nav-row"><span class="nav-icon"></span><span>보관함</span></div>
+        <div class="profile-row">
+          <div class="profile-avatar" data-testid="accounts-profile-button"></div>
+          <span>데모 프로필</span>
+        </div>
+      </nav>
+      <div class="aum-sidebar-card aum-claude block-claude">
+        <div class="aum-title"><span>Usage</span><span class="aum-time">오후 01:56</span></div>
+        <div class="aum-row">
+          <div class="aum-row-head"><span>세션 (5시간)</span><span class="aum-pct">42%</span></div>
+          <div class="aum-track"><div class="aum-fill" style="width:42%"></div></div>
+          <div class="aum-reset">2시간 23분 뒤 리셋</div>
+        </div>
+        <div class="aum-row">
+          <div class="aum-row-head"><span>주간 전체</span><span class="aum-pct">61%</span></div>
+          <div class="aum-track"><div class="aum-fill" style="width:61%"></div></div>
+          <div class="aum-reset">3일 1시간 뒤 리셋</div>
+        </div>
+        <div class="aum-row">
+          <div class="aum-row-head"><span>주간 · Claude Opus 4</span><span class="aum-pct">28%</span></div>
+          <div class="aum-track"><div class="aum-fill" style="width:28%"></div></div>
+          <div class="aum-reset">3일 23시간 뒤 리셋</div>
+        </div>
+      </div>
+      <div class="aum-sidebar-card aum-chatgpt block-chatgpt">
+        <div class="aum-title"><span>Usage</span><span class="aum-time">오후 01:56</span></div>
+        <div class="aum-row">
+          <div class="aum-row-head"><span>GPT-5</span><span class="aum-pct">47%</span></div>
+          <div class="aum-track"><div class="aum-fill" style="width:47%"></div></div>
+          <div class="aum-reset">3시간 48분 뒤 리셋</div>
+        </div>
+        <div class="aum-row">
+          <div class="aum-row-head"><span>딥 리서치</span><span class="aum-pct">남은 12회</span></div>
+          <div class="aum-reset">4일 뒤 리셋</div>
+        </div>
+        <div class="aum-row">
+          <div class="aum-row-head"><span>이미지 생성</span><span class="aum-pct">남은 34회</span></div>
+          <div class="aum-reset">7일 뒤 리셋</div>
+        </div>
+      </div>
+      <div class="df-bottom-tray"></div>
+    </aside>
+
+    <section class="workspace">
+      <div class="topbar">
+        <span class="inline-claude">Claude 페이지 위젯 데모</span>
+        <span class="inline-chatgpt">ChatGPT 페이지 위젯 데모</span>
+        <span class="privacy-pill">완전 무료 · 광고 없음 · 구독 없음</span>
+      </div>
+      <div class="capture-label">실제 확장 페이지 위젯</div>
+      <div class="empty-chat">
+        <img src="../icons/icon128.png" alt="" />
+        <h1>대화 중에도 한도를 바로 확인하세요</h1>
+        <p>사이드바와 입력창 아래에서 사용량과 리셋 시간을 보여 줍니다.</p>
+      </div>
+      <div class="widget-zoom block-claude">
+        <div class="zoom-kicker">실제 위젯 확대</div>
+        <h2>Claude 한도 현황</h2>
+        <p>세션·주간·모델별 사용량과 리셋 시간을 한 번에 확인합니다.</p>
+        <div class="aum-sidebar-card aum-claude">
+          <div class="aum-title"><span>Usage</span><span class="aum-time">오후 01:56</span></div>
+          <div class="aum-row">
+            <div class="aum-row-head"><span>세션 (5시간)</span><span class="aum-pct">42%</span></div>
+            <div class="aum-track"><div class="aum-fill" style="width:42%"></div></div>
+            <div class="aum-reset">2시간 23분 뒤 리셋</div>
+          </div>
+          <div class="aum-row">
+            <div class="aum-row-head"><span>주간 전체</span><span class="aum-pct">61%</span></div>
+            <div class="aum-track"><div class="aum-fill" style="width:61%"></div></div>
+            <div class="aum-reset">3일 1시간 뒤 리셋</div>
+          </div>
+          <div class="aum-row">
+            <div class="aum-row-head"><span>주간 · Claude Opus 4</span><span class="aum-pct">28%</span></div>
+            <div class="aum-track"><div class="aum-fill" style="width:28%"></div></div>
+            <div class="aum-reset">3일 23시간 뒤 리셋</div>
+          </div>
+        </div>
+      </div>
+      <div class="widget-zoom block-chatgpt">
+        <div class="zoom-kicker">실제 위젯 확대</div>
+        <h2>ChatGPT 한도 현황</h2>
+        <p>모델 사용률과 기능별 잔여 횟수를 대화 중에도 확인합니다.</p>
+        <div class="aum-sidebar-card aum-chatgpt">
+          <div class="aum-title"><span>Usage</span><span class="aum-time">오후 01:56</span></div>
+          <div class="aum-row">
+            <div class="aum-row-head"><span>GPT-5</span><span class="aum-pct">47%</span></div>
+            <div class="aum-track"><div class="aum-fill" style="width:47%"></div></div>
+            <div class="aum-reset">3시간 48분 뒤 리셋</div>
+          </div>
+          <div class="aum-row">
+            <div class="aum-row-head"><span>딥 리서치</span><span class="aum-pct">남은 12회</span></div>
+            <div class="aum-reset">4일 뒤 리셋</div>
+          </div>
+          <div class="aum-row">
+            <div class="aum-row-head"><span>이미지 생성</span><span class="aum-pct">남은 34회</span></div>
+            <div class="aum-reset">7일 뒤 리셋</div>
+          </div>
+        </div>
+      </div>
+      <div class="composer-wrap">
+        <div class="composer">메시지를 입력하세요</div>
+        <div class="aum-composer-bar aum-claude composer-claude">
+          <span>세션 사용률 <span class="aum-pct">42%</span></span>
+          <span class="aum-track"><span class="aum-fill" style="width:42%; display:block"></span></span>
+          <span class="aum-muted">2시간 23분 뒤 리셋</span>
+          <span class="aum-muted">· 주간 <span class="aum-pct">61%</span></span>
+        </div>
+        <div class="aum-composer-bar aum-chatgpt composer-chatgpt">
+          <span class="aum-item">GPT-5 <span class="aum-pct">47%</span>
+            <span class="aum-track"><span class="aum-fill" style="width:47%; display:block"></span></span>
+            <span class="aum-muted">3시간 48분 뒤 리셋</span>
+          </span>
+          <button class="aum-toggle" type="button">상세 ▾</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="application/json" id="capture-render-source">
+    if (provider === 'chatgpt') {
+      document.getElementById('claude-composer').remove();
+      document.getElementById('provider-name').textContent = 'ChatGPT';
+      document.getElementById('page-label').textContent = 'ChatGPT 페이지 위젯 데모';
+    } else {
+      document.getElementById('chatgpt-composer').remove();
+    }
+
+    const contentScript = document.createElement('script');
+    contentScript.src = provider === 'chatgpt'
+      ? '../content/chatgpt.js'
+      : '../content/overlay.js';
+    document.body.appendChild(contentScript);
+  </script>
+  <script>
+    if (captureLocale !== 'ko') {
+      document.title = 'AI Usage Limit Alerts — Page Widget Screenshot';
+      const translations = new Map([
+        ['새 대화', 'New chat'],
+        ['최근 대화', 'Recent chats'],
+        ['보관함', 'Library'],
+        ['데모 프로필', 'Demo profile'],
+        ['오후 01:56', '1:56 PM'],
+        ['세션 (5시간)', 'Session (5 hours)'],
+        ['주간 전체', 'Weekly total'],
+        ['주간 · Claude Opus 4', 'Weekly · Claude Opus 4'],
+        ['2시간 23분 뒤 리셋', 'Resets in 2h 23m'],
+        ['3일 1시간 뒤 리셋', 'Resets in 3d 1h'],
+        ['3일 23시간 뒤 리셋', 'Resets in 3d 23h'],
+        ['3시간 48분 뒤 리셋', 'Resets in 3h 48m'],
+        ['딥 리서치', 'Deep research'],
+        ['남은 12회', '12 left'],
+        ['4일 뒤 리셋', 'Resets in 4d'],
+        ['이미지 생성', 'Image generation'],
+        ['남은 34회', '34 left'],
+        ['7일 뒤 리셋', 'Resets in 7d'],
+        ['Claude 페이지 위젯 데모', 'Claude page widget demo'],
+        ['ChatGPT 페이지 위젯 데모', 'ChatGPT page widget demo'],
+        ['완전 무료 · 광고 없음 · 구독 없음', 'Completely free · No ads · No subscription'],
+        ['실제 확장 페이지 위젯', 'Actual extension page widget'],
+        ['대화 중에도 한도를 바로 확인하세요', 'Keep limits visible while you chat'],
+        ['사이드바와 입력창 아래에서 사용량과 리셋 시간을 보여 줍니다.', 'See usage and reset times in the sidebar and below the composer.'],
+        ['실제 위젯 확대', 'ACTUAL WIDGET CLOSE-UP'],
+        ['Claude 한도 현황', 'Claude limit status'],
+        ['세션·주간·모델별 사용량과 리셋 시간을 한 번에 확인합니다.', 'See session, weekly, and model usage with reset times in one place.'],
+        ['ChatGPT 한도 현황', 'ChatGPT limit status'],
+        ['모델 사용률과 기능별 잔여 횟수를 대화 중에도 확인합니다.', 'Track model usage and feature limits without leaving your chat.'],
+        ['메시지를 입력하세요', 'Type a message'],
+        ['세션 사용률', 'Session usage'],
+        ['· 주간', '· Weekly'],
+        ['상세 ▾', 'Details ▾']
+      ]);
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
+      for (const node of textNodes) {
+        const raw = node.nodeValue;
+        const trimmed = raw.trim();
+        if (translations.has(trimmed)) {
+          node.nodeValue = raw.replace(trimmed, translations.get(trimmed));
+        }
+      }
+    }
+  </script>
+</body>
+</html>
