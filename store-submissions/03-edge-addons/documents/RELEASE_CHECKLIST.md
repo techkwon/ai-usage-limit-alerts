@@ -25,7 +25,7 @@ Use this checklist before packaging and submitting the extension.
 
 ## Privacy
 
-- [ ] The privacy policy URL is filled in.
+- [x] The public privacy policy URL is prepared: `https://techkwon.github.io/ai-usage-limit-alerts/privacy/`.
 - [ ] The support email is filled in.
 - [x] The effective date is filled in.
 - [x] The privacy policy matches the extension's current data flow.

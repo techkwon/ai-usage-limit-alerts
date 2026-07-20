@@ -41,4 +41,4 @@ node --test tests/provider-normalization.test.mjs tests/optimization-red.test.mj
 
 ## 개인정보
 
-확장 프로그램은 브라우저의 기존 로그인 상태를 이용해 네 서비스 도메인에 직접 요청합니다. 개발자 백엔드, 광고 SDK와 분석 SDK는 없습니다. 공개 배포 전에는 [개인정보처리방침](./store-assets/PRIVACY_POLICY.md)의 지원 이메일과 공개 정책 URL을 입력해야 합니다.
+확장 프로그램은 브라우저의 기존 로그인 상태를 이용해 네 서비스 도메인에 직접 요청합니다. 개발자 백엔드, 광고 SDK와 분석 SDK는 없습니다. 공개 개인정보처리방침은 [GitHub Pages](https://techkwon.github.io/ai-usage-limit-alerts/privacy/)에서 확인할 수 있으며, 상세 원문은 [저장소 문서](./store-assets/PRIVACY_POLICY.md)에 있습니다.

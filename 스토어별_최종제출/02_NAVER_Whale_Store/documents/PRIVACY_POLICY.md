@@ -2,11 +2,11 @@
 
 **제품명 / Product:** AI 사용량 한도 알림
 
-**시행일 / Effective date:** 2026-07-20
+**시행일 / Effective date:** 2026-07-21
 
-**문의 / Support email:** [배포 전 입력: support email]
+**문의 / Contact:** https://github.com/techkwon/ai-usage-limit-alerts/issues
 
-**공개 정책 URL / Public policy URL:** [배포 전 입력: public privacy policy URL]
+**공개 정책 URL / Public policy URL:** https://techkwon.github.io/ai-usage-limit-alerts/privacy/
 
 이 문서는 확장 프로그램이 현재 코드 기준으로 데이터를 어떻게 처리하는지 설명합니다.
 
@@ -67,12 +67,20 @@
 
 로컬 캐시는 새 조회 결과로 덮어쓰며, 사용자가 확장 프로그램 데이터를 삭제하거나 확장 프로그램을 제거할 때 삭제할 수 있습니다. 개발자 서버에 사본이 없으므로 별도의 원격 삭제 요청은 필요하지 않습니다.
 
-## 8. 변경과 문의
+## 8. Chrome Web Store Limited Use 준수
 
-데이터 처리 방식이 바뀌면 배포 전에 이 문서를 갱신합니다. 개인정보 관련 문의는 위의 지원 이메일로 받을 수 있습니다.
+확장 프로그램이 처리하는 데이터는 공개된 단일 목적 기능을 제공하는 데에만 사용됩니다. 개발자는 사용자 데이터를 판매하거나 개인 맞춤 광고, 신용 평가, 대출 또는 관련 없는 목적으로 사용하지 않으며, 개발자 서버에서 사람이 사용자 데이터를 열람할 수 있도록 하지 않습니다.
+
+The use of information received from Google APIs will adhere to the Chrome Web Store User Data Policy, including the Limited Use requirements.
+
+## 9. 변경과 문의
+
+데이터 처리 방식이 바뀌면 배포 전에 이 문서와 Chrome Web Store 공개 내용을 함께 갱신합니다. 개인정보 관련 문의는 위의 GitHub Issues 링크를 이용할 수 있습니다.
 
 ## English summary
 
 The extension uses the browser's existing sign-in sessions to request usage and reset data directly from `claude.ai`, `chatgpt.com`, `gemini.google.com`, and `grok.com`. Usage caches, Claude organization selection, a Gemini request token, and notification state may be stored in `chrome.storage.local`. A ChatGPT access token is used transiently in memory and is not persisted.
 
 No data is sent to a developer-operated server. The developer does not collect chats, prompts, passwords, payment information, browsing history, advertising identifiers, analytics, or telemetry. Users can delete local extension data through browser controls or by removing the extension.
+
+Data handled by the extension is used only to provide its disclosed single-purpose features. It is not sold, used for personalized advertising, credit decisions, lending, or unrelated purposes, and is not made available for human review by the developer.
